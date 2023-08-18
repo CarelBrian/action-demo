@@ -1,0 +1,120 @@
+name: Data Processing Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - approche_pandas
+      - approche_etl
+      - approche_db
+
+jobs:
+  process_data_pandas:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Download Raw Dataset
+        run: |
+          mkdir action-demo1
+          curl -o action-demo/raw_dataset.csv <"C:/Users/USER/action-demo/raw_dataset.csv">
+
+      - name: Process Data - Pandas
+        run: |
+          python process_data_pandas.py
+
+      - name: Commit and Push Processed Data - Pandas
+        run: |
+          git config --local user.email "mousse.brian@gmail.com"
+          git config --local user.name "CarelBrian"
+          git add cleaned_data.db
+          git commit -m "Add cleaned data - Pandas"
+          git push origin approche_pandas
+
+      - name: Upload Processed Data to Releases - Pandas
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cleaned_data.db
+          asset_name: cleaned_data_pandas.db
+          asset_content_type: application/x-sqlite3
+
+      - name: Clean Up - Pandas
+        run: |
+          rm -r action-demo
+          rm cleaned_data.db
+
+  process_data_etl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Download Raw Dataset
+        run: |
+          mkdir action-demo
+          curl -o action-demo/raw_dataset.csv <"C:/Users/USER/action-demo/raw_dataset.csv">
+
+      - name: Process Data - ETL
+        run: |
+          python process_data_etl.py
+
+      - name: Commit and Push Processed Data - ETL
+        run: |
+          git config --local user.email "mousse.brian@gmail.com"
+          git config --local user.name "CarelBrian"
+          git add cleaned_data.db
+          git commit -m "Add cleaned data - ETL"
+          git push origin approche_etl
+
+
+      - name: Upload Processed Data to Releases - ETL
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cleaned_data.db
+          asset_name: cleaned_data_etl.db
+          asset_content_type: application/x-sqlite3
+
+      - name: Clean Up - ETL
+        run: |
+          rm -r action-demo
+          rm cleaned_data.db
+
+  process_data_db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Download Raw Dataset
+        run: |
+          mkdir action-demo
+          curl -o action-demo/raw_dataset.csv <"C:/Users/USER/action-demo/raw_dataset.csv">
+
+      - name: Process Data - DB
+        run: |
+          python process_data_db.py
+
+      - name: Commit and Push Processed Data - DB
+        run: |
+          git config --local user.email "mousse.brian@gmail.com"
+          git config --local user.name "CarelBrian"
+          git add cleaned_data.db
+          git commit -m "Add cleaned data - DB"
+          git push origin approche_db
+
+
+      - name: Upload Processed Data to Releases - DB
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cleaned_data.db
+          asset_name: cleaned_data_db.db
+          asset_content_type: application/x-sqlite3
+
+      - name: Clean Up - DB
+        run: |
+          rm -r action-demo
+          rm cleaned_data.db
